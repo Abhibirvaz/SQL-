@@ -1,0 +1,97 @@
+select * from sales;
+
+select saleDate,Amount,customers from sales;	
+
+select saleDate,Amount,Boxes,Amount/Boxes 'Amount per Box' from sales;
+select * from sales
+where amount>10000
+order by Amount desc;
+
+select * from sales
+where geoId ='g1'
+order by PID,amount desc;
+
+select* from sales
+where amount >10000 and saleDate >='2022-01-01';
+
+select saleDate, Amount from sales
+where Amount>10000 and year(saleDate)=2022;
+
+select*  from  sales
+where Boxes  between 0 and 50;
+select SaleDate,Amount,Boxes,weekday(saleDate)as 'day of week'
+from sales
+where weekday(saledate)=4;
+select* from People;
+select*from People
+where team='Delish' or team='Jucies';
+
+select* from  People 
+where team in('Delish','Jucies');
+
+select*from  People	
+where Salesperson like '%B%';
+
+select* from  sales;
+
+select SaleDate,Amount,
+		case	when Amount < 1000 then 'Under 1K'
+				when Amount < 5000 then 'under 5K'
+				when Amount <10000 then 'under 10K'
+			else 'more then  10K'
+		end as 'Amount Category'
+from  sales
+order by amount	;
+
+select * from sales;
+
+select* from  people;
+
+select s.SaleDate,s.Amount,p.Salesperson,s.SPID
+from  sales as s
+join people as p on s.SPID=p.SPID;
+
+select s.SaleDate,s.Amount,p.Salesperson,s.SPID,pr.Product,p.Team
+from  sales as s
+join people as p on s.SPID=p.SPID
+join products as pr on pr.PID= s.pid;
+
+
+select s.SaleDate,s.Amount,p.Salesperson,s.SPID,pr.Product,p.Team
+from  sales as s
+join people as p on s.SPID=p.SPID
+join products as pr on pr.PID= s.pid
+where s.Amount<500 and  p.team ='Delish';
+
+select s.SaleDate,s.Amount,p.Salesperson,s.SPID,pr.Product,p.Team,g.Region
+from  sales as s
+join people as p on p.SPID=s.SPID
+join products as pr on pr.PID= s.pid
+Join geo as g on g.geoid=s.geoid
+where s.Amount<500 and  p.team =''
+and g.geo in('New zealand','India')
+order by SaleDate;
+
+select geoID,sum(Amount),avg(Amount),sum(Boxes)				
+from sales
+group by GeoID;
+
+select g.geo,sum(Amount),avg(Amount),sum(Boxes)				
+from sales as s			
+join geo as g on s.GeoID=g.GeoID
+group by g.Geo;
+
+select pr.Category,p.team,sum(Boxes),sum(Amount)
+from  sales as s 
+join people as p on p.spid=s.spid
+join products as pr on pr.pid=s.pid
+where p.team<>''
+group by pr.category ,P.team
+order by pr.category ,P.team;
+
+select	pr.Product,sum(s.amount) as'total amount'
+from  sales s 	
+join products pr on pr.pid=s.pid
+group by pr.product
+order by 'total amount ' desc
+limit 100;
